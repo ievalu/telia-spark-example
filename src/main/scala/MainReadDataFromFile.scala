@@ -12,6 +12,7 @@ object MainReadDataFromFile extends App {
   val spark = SparkSession.builder
     .master("local")
     .appName("MainReadDataFromFile")
+    .config("spark.sql.parquet.compression.codec", "uncompressed")
     .getOrCreate()
 
   // Create schema
