@@ -13,3 +13,6 @@ target/
 
 # general
 *.class
+
+# Parquet files
+transformed-customers/
