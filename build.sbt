@@ -9,4 +9,6 @@ lazy val root = (project in file("."))
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "3.2.2",
-  "org.apache.spark" %% "spark-sql" % "3.2.2" )
+  "org.apache.spark" %% "spark-sql"  % "3.2.2",
+  "org.scalatest"    %% "scalatest"  % "3.2.15" % Test
+)
