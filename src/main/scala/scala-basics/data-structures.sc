@@ -17,7 +17,7 @@ def thisTakesOnlyLists(list: List[Int]) = list.map(_ + 1)
 thisTakesAllSeq(exampleSeq)
 
 // Type miss match
-//thisTakesOnlyLists(exampleSeq)
+//thisTakesOnlyLists(exampleList)
 
 // Mutable data structures
 val mutableSeq: scala.collection.mutable.Seq[Int] =

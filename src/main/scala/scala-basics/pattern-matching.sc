@@ -9,3 +9,19 @@ randomInt match {
   case 2 => "two"
   case _ => "other"
 }
+
+sealed trait Reminder
+
+case class Message() extends Reminder
+
+case class PopUpNotification() extends Reminder
+
+case class Email() extends Reminder
+
+val reminder: Reminder = Message()
+
+reminder match {
+  case m: Message           => "message"
+  case p: PopUpNotification => "pop up"
+  case e: Email             => "email"
+}
