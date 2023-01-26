@@ -31,6 +31,9 @@ object MainDataframe extends App {
         .otherwise("unknown")
     )
 
+  // Show results with the new gender title
+  customerDFWithGenderTitle.show()
+
   // Filter out male customers, leaving only female ones.
   val filteredCustomerDF = customerDFWithGenderTitle.filter(col("gender") === "f")
 

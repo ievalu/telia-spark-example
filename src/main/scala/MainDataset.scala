@@ -30,13 +30,16 @@ object MainDataset extends App {
   // Filter out male customers, leaving only female ones.
   val transformedCustomerDataset = customerDataset.filter(c => c.gender == "f").map(transformCustomer)
 
+  // Show transformed customer dataset
+  transformedCustomerDataset.show()
+
   // Join the two datasets to get all the purchases that female customers make.
   val joinedDataset: Dataset[Purchase] =
-    customerDataset
-      .join(purchaseDataset, customerDataset.col("id").equalTo(purchaseDataset.col("customerId")), "inner")
-      .drop(customerDataset.col("id"))
-      .drop(customerDataset.col("gender"))
-      .drop(customerDataset.col("name"))
+    transformedCustomerDataset
+      .join(purchaseDataset, transformedCustomerDataset.col("id").equalTo(purchaseDataset.col("customerId")), "inner")
+      .drop(transformedCustomerDataset.col("id"))
+      .drop(transformedCustomerDataset.col("gender"))
+      .drop(transformedCustomerDataset.col("name"))
       .as[Purchase]
 
   // Show the final result.

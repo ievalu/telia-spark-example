@@ -46,6 +46,7 @@ object MainReadDataFromFile extends App {
 
   transformedCustomersDF.write.parquet("src/main/resources/transformed-customers")
 
+  // Read the previously written data and check schema and the data
   val readTransformedCustomersDF: DataFrame = spark.read
     .format("parquet")
     .option("header", "true")
