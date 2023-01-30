@@ -91,8 +91,8 @@ object FirstTask extends App {
     )
     .withColumn(
       "segment",
-      when(col("gender").equalTo("B2C"), lit("Consumer"))
-        .when(col("gender").equalTo("B2B"), lit("Business"))
+      when(col("segment").equalTo("B2C"), lit("Consumer"))
+        .when(col("segment").equalTo("B2B"), lit("Business"))
         .otherwise("Other")
     )
     .drop("firstName")
