@@ -18,8 +18,6 @@ import java.time.temporal.ChronoField
 
 // NOTE: product - value either BB or TV; stock, sales and churn - aggregated figures on product, segment and technology
 // NOTE: for TV product technology is Unknown
-
-// NOTE TO ME: MENTION HOW TO READ FILES, ABOUT COMPARING DATES SO IT WOULD BE EASIER FOR THEM
 object ThirdTask extends App {
 
   val spark = SparkSession.builder
