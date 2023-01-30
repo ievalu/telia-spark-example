@@ -124,11 +124,14 @@ object FirstTask extends App {
         1
       ).otherwise(0)
     )
+    .withColumnRenamed("id", "broadBandSubscriptionId")
 
-  val joinedDataframe = subscriberDataframe.join(
-    broadbandSubscriptionDataframe,
-    subscriberDataframe("id").equalTo(broadbandSubscriptionDataframe("subscriberId"))
-  )
+  val joinedDataframe = subscriberDataframe
+    .join(
+      transformedBroadbandSubscriptionDf,
+      subscriberDataframe("id").equalTo(transformedBroadbandSubscriptionDf("subscriberId"))
+    )
+    .drop("id")
 
   joinedDataframe.show()
 

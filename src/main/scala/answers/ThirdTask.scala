@@ -8,6 +8,8 @@ import org.apache.spark.sql.functions.sum
 import org.apache.spark.sql.types.StructType
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
 
 // NOTE: You can solve this task using whichever data structure you prefer.
 
@@ -43,9 +45,25 @@ object ThirdTask extends App {
       validFrom: String,
       validTo: String) {
     val product: String = "BB"
-    val stock: Int      = 1
-    val sales: Int      = if (validFrom == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
-    val churn: Int      = if (validTo == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
+
+    private val dateFormatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyyMM")
+      .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+      .toFormatter()
+
+    val validFromDate = LocalDate.parse(validFrom, dateFormatter)
+    val validToDate   = LocalDate.parse(validTo, dateFormatter)
+
+    private val currentDate = LocalDate.now().withDayOfMonth(1)
+
+    val stock: Int =
+      if (
+        (validFromDate.isBefore(currentDate) || validFromDate.isEqual(currentDate)) && validToDate.isAfter(currentDate)
+      ) 1
+      else 0
+
+    val sales: Int = if (validFrom == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
+    val churn: Int = if (validTo == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
   }
 
   object BroadbandSubscription {
@@ -60,9 +78,25 @@ object ThirdTask extends App {
       validTo: String) {
     val product: String    = "TV"
     val technology: String = "Unknown"
-    val stock: Int         = 1
-    val sales: Int         = if (validFrom == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
-    val churn: Int         = if (validTo == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
+
+    private val dateFormatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyyMM")
+      .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+      .toFormatter()
+
+    val validFromDate = LocalDate.parse(validFrom, dateFormatter)
+    val validToDate   = LocalDate.parse(validTo, dateFormatter)
+
+    private val currentDate = LocalDate.now().withDayOfMonth(1)
+
+    val stock: Int =
+      if (
+        (validFromDate.isBefore(currentDate) || validFromDate.isEqual(currentDate)) && validToDate.isAfter(currentDate)
+      ) 1
+      else 0
+
+    val sales: Int = if (validFrom == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
+    val churn: Int = if (validTo == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
   }
 
   object TVSubscription {

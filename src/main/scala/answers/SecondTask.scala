@@ -6,7 +6,8 @@ import org.apache.spark.sql.Encoders
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.StructType
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
 
 // Steps:
 //   1. Create dataset of subscribers from subscribers.csv file
@@ -44,9 +45,25 @@ object SecondTask extends App {
       technology: String,
       validFrom: String,
       validTo: String) {
-    val stock: Int = 1
-    val sales: Int = if (validFrom == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
-    val churn: Int = if (validTo == LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"))) 1 else 0
+
+    private val dateFormatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyyMM")
+      .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+      .toFormatter()
+
+    val validFromDate = LocalDate.parse(validFrom, dateFormatter)
+    val validToDate   = LocalDate.parse(validTo, dateFormatter)
+
+    private val currentDate = LocalDate.now().withDayOfMonth(1)
+
+    val stock: Int =
+      if (
+        (validFromDate.isBefore(currentDate) || validFromDate.isEqual(currentDate)) && validToDate.isAfter(currentDate)
+      ) 1
+      else 0
+
+    val sales: Int = if (validFromDate.isEqual(currentDate)) 1 else 0
+    val churn: Int = if (validToDate.isEqual(currentDate)) 1 else 0
   }
 
   object BroadbandSubscription {
@@ -62,9 +79,11 @@ object SecondTask extends App {
   }
 
   case class TransformedBroadbandSubscription(
-      id: String,
+      broadBandSubscriptionId: String,
       subscriberId: String,
       technology: String,
+      validFrom: String,
+      validTo: String,
       stock: Int,
       sales: Int,
       churn: Int)
@@ -100,19 +119,23 @@ object SecondTask extends App {
   val transformedBroadbandSubscriptionDataset: Dataset[TransformedBroadbandSubscription] =
     broadbandSubscriptionDataset.map(b =>
       TransformedBroadbandSubscription(
-        id = b.id,
+        broadBandSubscriptionId = b.id,
         subscriberId = b.subscriberId,
         technology = b.technology,
+        validFrom = b.validFrom,
+        validTo = b.validTo,
         stock = b.stock,
         sales = b.sales,
         churn = b.churn
       )
     )
 
-  val joinedDataset = transformedSubscriberDataset.join(
-    transformedBroadbandSubscriptionDataset,
-    transformedSubscriberDataset("id").equalTo(transformedBroadbandSubscriptionDataset("subscriberId"))
-  )
+  val joinedDataset = transformedSubscriberDataset
+    .join(
+      transformedBroadbandSubscriptionDataset,
+      transformedSubscriberDataset("id").equalTo(transformedBroadbandSubscriptionDataset("subscriberId"))
+    )
+    .drop("id")
 
   joinedDataset.show()
 
